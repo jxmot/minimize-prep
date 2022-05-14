@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hello!</title>
+    <link rel="stylesheet" href="https://unpkg.com/reset-css@5.0.1/reset.css" />
+    <link rel="stylesheet" href="./assets/css/example_1.css" type="text/css" />
+    <link rel="stylesheet" href="./assets/css/example_2.css" type="text/css" />
+<!-- this should work, note the missing "./" -->
+    <link rel="stylesheet" href="assets/css/example_3.css" type="text/css" />
+<!-- this will be skipped -->
+    <!-- <link rel="stylesheet" href="./assets/css/example_4.css" type="text/css" /> -->
+  </head>
+  <body>
+<!-- this will be skipped -->
+    <script src="//code.jquery.com/jquery-3.6.0.min.js" type="text/javascript"></script>
+
+<!-- this should work also, note that the path starts with just "/" -->
+    <script src="/assets/js/example_1.js" type="text/javascript"></script>
+    <script src="./assets/js/example_2.js" type="text/javascript"></script>
+<!-- this will be skipped too -->
+    <script>
+        function test(x) {
+            console.log(x);
+        };
+    </script>
+    <script src="./assets/js/example_3.js" type="text/javascript"></script>
+    <script src="./assets/js/example_4.js" type="text/javascript"></script>
+  </body>
+</html>
