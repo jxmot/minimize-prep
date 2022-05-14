@@ -1,0 +1,7 @@
+{
+    "input":"example.html",
+    "fileroot":"./public_html/",
+    "cssout": "./site.css",
+    "jsout": "./site.js",
+    "filecomment": true
+}
