@@ -2,12 +2,13 @@
 
 This repository contains a PHP script that reads a file where HTML tags (`<script>` and '<link>') are used for including CSS and Javascript files in a web page. As each CSS or JavaScript file tag is found the file contents are read and then appended to output file (CSS or JS).
 
-The result are two files that are ready for *minimization*. However, minimization is not required. You can use this to combine your CSS and JS files in order to reduce the number of requests made by the browser.
+The result are two files that are ready for *minimization*. However, minimization is not required. You can use this to combine your CSS and JS files in order to reduce the number of requests made by the browser to the server.
 
 ## What's Here
 
 * `minprep.json` - script configuration
 * `minprep.php` - opens the specified (*in minprep.json*) HTML file, reads it and looks for `<link>` and `<script>` tags. When found the path and file name are extracted and those files will be opened and concatenated in the specified CSS and JS files.
+* `public_html/*` - this folder contains files for use in the example
 
 ## Set Up
 
@@ -86,8 +87,6 @@ JS found - ./assets/js/example_4.js
 Preparation Complete.
 ```
 
-
-
 # Important Things to Note
 
 Commented out `<link>` or `<script>` tags must look like this:
@@ -113,6 +112,8 @@ src="path/to/some.js"
 ```
 
 The paths in the `<link>` and `<script>` can be *relative* or *absolute*. The script will create path using `"fileroot"`in the `minprep.json` file.
+
+Each time you run `minprep.php` it will **overwrite** the `site.css` and `site.js` files.
 
 ---
 <img src="http://webexperiment.info/extcounter/mdcount.php?id=minimize-prep">
