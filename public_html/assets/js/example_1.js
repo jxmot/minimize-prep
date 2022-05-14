@@ -1,4 +1,4 @@
-function sample_1() {
+function example_1() {
     // just a sample 
-    console.log('sample_1 here!');
+    console.log('example_1 here!');
 }
