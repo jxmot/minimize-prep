@@ -54,7 +54,8 @@ Now open `minprep.json`:
     "input":"example.html",
     "fileroot":"./public_html/",
     "cssout": "./site.css",
-    "jsout": "./site.js"
+    "jsout": "./site.js",
+    "filecomment": true
 }
 ```
 
@@ -66,5 +67,52 @@ Please note that `"fileroot"` is set for use within this repository space. Edit 
 php ./minprep.php
 ```
 
+The script will create output similar to this:
+
+```
+Starting preparation...
+Input: ./public_html/example.html
+Files Root Path: ./public_html/
+./site.css and ./site.js will be overwritten.
+
+CSS found - ./assets/css/example_1.css
+CSS found - ./assets/css/example_2.css
+CSS found - ./assets/css/example_3.css
+JS found - ./assets/js/example_1.js
+JS found - ./assets/js/example_2.js
+JS found - ./assets/js/example_3.js
+JS found - ./assets/js/example_4.js
+
+Preparation Complete.
+```
 
 
+
+# Important Things to Note
+
+Commented out `<link>` or `<script>` tags must look like this:
+
+```
+<!-- <link rel="stylesheet" href="./assets/css/example_4.css" type="text/css" /> -->
+```
+
+This will **not** work:
+
+```
+<!-- 
+<link rel="stylesheet" href="./assets/css/example_4.css" type="text/css" /> 
+-->
+```
+
+All `<link>` and `<script>` tags need to be contained on a single line, for example this will not work:
+
+```
+<script
+src="path/to/some.js"
+>
+```
+
+The paths in the `<link>` and `<script>` can be *relative* or *absolute*. The script will create path using `"fileroot"`in the `minprep.json` file.
+
+---
+<img src="http://webexperiment.info/extcounter/mdcount.php?id=minimize-prep">
