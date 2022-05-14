@@ -1,6 +1,6 @@
 # minimize-prep
 
-This repository contains a PHP script that reads a file where HTML tags (`<script>` and '<link>') are used for including CSS and Javascript files in a web page. As each CSS or JavaScript file tag is found the file contents are read and then appended to output file (CSS or JS).
+This repository contains a PHP script that reads a file where HTML tags (`<script>` and `<link>`) are used for including CSS and Javascript files in a web page. As each CSS or JavaScript file tag is found the file contents are read and then appended to output file (CSS or JS).
 
 The result are two files that are ready for *minimization*. However, minimization is not required. You can use this to combine your CSS and JS files in order to reduce the number of requests made by the browser to the server.
 
