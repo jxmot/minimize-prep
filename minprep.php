@@ -26,6 +26,10 @@
 */
 echo "Starting preparation...\n";
 $minprep = json_decode(file_get_contents('./minprep.json'));
+if(file_exists($minprep->fileroot.$minprep->input) === false) {
+    echo $minprep->fileroot.$minprep->input . ' does not exist!';
+    die();
+}
 echo "Input: {$minprep->fileroot}{$minprep->input}\n";
 echo "Files Root Path: {$minprep->fileroot}\n";
 echo "{$minprep->cssout} and {$minprep->jsout} will be overwritten.\n\n";
@@ -50,6 +54,7 @@ while(!feof($htmlin)) {
             if($href === false || ($href > $cbeg) && ($href < $cend)) continue;
             if((strpos($hline, 'http://') === false) && 
                (strpos($hline, 'https://') === false) && 
+               (strpos($hline, 'site.css') === false) && 
                (strpos($hline, '//') === false)) {
                 $url = substr($hline, $href + 6);
                 $url = substr($url, 0, strpos($url, '"'));
@@ -68,7 +73,8 @@ while(!feof($htmlin)) {
             if($src === false || ($src > $cbeg) && ($src < $cend)) continue;
             if((strpos($hline, 'http://') === false) && 
                (strpos($hline, 'https://') === false) && 
-               (strpos($hline, 'jquery') === false) &&
+               (strpos($hline, 'site.js') === false) && 
+               (strpos($hline, 'jquery') === false) && 
                (strpos($hline, '//') === false)) {
                 $url = substr($hline, $src + 5);
                 $url = substr($url, 0, strpos($url, '"'));
