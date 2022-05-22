@@ -3,5 +3,6 @@
     "fileroot":"./public_html/",
     "cssout": "./site.css",
     "jsout": "./site.js",
-    "filecomment": true
+    "filecomment": true,
+    "mkbash": true
 }

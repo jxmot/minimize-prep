@@ -56,7 +56,8 @@ Now open `minprep.json`:
     "fileroot":"./public_html/",
     "cssout": "./site.css",
     "jsout": "./site.js",
-    "filecomment": true
+    "filecomment": true,
+    "mkbash": true
 }
 ```
 
@@ -75,6 +76,7 @@ Starting preparation...
 Input: ./public_html/example.html
 Files Root Path: ./public_html/
 ./site.css and ./site.js will be overwritten.
+Creating ./rmvresources.sh file
 
 CSS found - ./assets/css/example_1.css
 CSS found - ./assets/css/example_2.css
@@ -113,7 +115,7 @@ src="path/to/some.js"
 
 The paths in the `<link>` and `<script>` can be *relative* or *absolute*. The script will create path using `"fileroot"`in the `minprep.json` file.
 
-Each time you run `minprep.php` it will **overwrite** the `site.css` and `site.js` files.
+Each time you run `minprep.php` it will **overwrite** the `site.css` and `site.js` files. And if `"mkbash"` is `true` in `minprep.json` then a *bash script* named `rmvresources.sh` will be created. Its purpose is to make removing the original CSS and JS easier. Although removing them is not required, it is your descision for your project.
 
 ---
 <img src="http://webexperiment.info/extcounter/mdcount.php?id=minimize-prep">

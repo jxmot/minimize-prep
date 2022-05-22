@@ -32,12 +32,20 @@ if(file_exists($minprep->fileroot.$minprep->input) === false) {
 }
 echo "Input: {$minprep->fileroot}{$minprep->input}\n";
 echo "Files Root Path: {$minprep->fileroot}\n";
-echo "{$minprep->cssout} and {$minprep->jsout} will be overwritten.\n\n";
+echo "{$minprep->cssout} and {$minprep->jsout} will be overwritten.\n";
 
 $cssout = @fopen($minprep->cssout, 'w');
 $jsout  = @fopen($minprep->jsout, 'w');
 $htmlin = @fopen($minprep->fileroot . $minprep->input, 'r');
 $hline  = '';
+
+$bashout = null;
+$bashfile = './rmvresources.sh';
+if($minprep->mkbash === true) {
+    echo "Creating {$bashfile} file\n\n";
+    $bashout = @fopen($bashfile, 'w');
+    fwrite($bashout, "#!/bin/bash\n");
+} else echo "\n";
 
 while(!feof($htmlin)) {
     $hline = fgets($htmlin);
@@ -63,6 +71,9 @@ while(!feof($htmlin)) {
                 if($minprep->filecomment === true) fwrite($cssout, "\n/* **** {$url} **** */\n");
                 else fwrite($cssout, "\n");
                 fwrite($cssout, $css);
+                if($minprep->mkbash === true) {
+                    fwrite($bashout, "rm -f {$minprep->fileroot}{$url}\n");
+                }
             }
         }
     } else {
@@ -83,6 +94,9 @@ while(!feof($htmlin)) {
                 if($minprep->filecomment === true) fwrite($jsout, "\n/* **** {$url} **** */\n");
                 else fwrite($jsout, "\n");
                 fwrite($jsout, $js);
+                if($minprep->mkbash === true) {
+                    fwrite($bashout, "rm -f {$minprep->fileroot}{$url}\n");
+                }
             }
         }
     }
@@ -95,6 +109,11 @@ fflush($jsout);
 fclose($jsout);
 
 fclose($htmlin);
+
+if($minprep->mkbash === true) {
+    fflush($bashout);
+    fclose($bashout);
+}
 
 echo "\nPreparation Complete.\n";
 ?>
