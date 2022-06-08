@@ -32,7 +32,7 @@ if(file_exists($minprep->fileroot.$minprep->input) === false) {
 }
 echo "Input: {$minprep->fileroot}{$minprep->input}\n";
 echo "Files Root Path: {$minprep->fileroot}\n";
-echo "{$minprep->cssout} and {$minprep->jsout} will be overwritten.\n";
+echo "{$minprep->cssout} and {$minprep->jsout} will be overwritten.\n\n";
 
 $cssout = @fopen($minprep->cssout, 'w');
 $jsout  = @fopen($minprep->jsout, 'w');
@@ -64,15 +64,28 @@ while(!feof($htmlin)) {
                (strpos($hline, 'https://') === false) && 
                (strpos($hline, 'site.css') === false) && 
                (strpos($hline, '//') === false)) {
-                $url = substr($hline, $href + 6);
-                $url = substr($url, 0, strpos($url, '"'));
-                echo 'CSS found - ' . $url . "\n";
-                $css = file_get_contents($minprep->fileroot . $url);
-                if($minprep->filecomment === true) fwrite($cssout, "\n/* **** {$url} **** */\n");
-                else fwrite($cssout, "\n");
-                fwrite($cssout, $css);
-                if($minprep->mkbash === true) {
-                    fwrite($bashout, "rm -f {$minprep->fileroot}{$url}\n");
+                $exclude = false;
+                if(count($minprep->cssexclude) > 0) {
+                    for($ix = 0;$ix < count($minprep->cssexclude);$ix++) {
+                        if(strpos($hline, $minprep->cssexclude[$ix]) !== false) {
+                            $exclude = true;
+                            echo "\nCSS exluded -  {$hline}\n";
+                            break;
+                        }
+                    }
+                }
+                if($exclude === false) {
+                    $url = substr($hline, $href + 6);
+                    $url = substr($url, 0, strpos($url, '"'));
+                    echo 'CSS found - ' . $url . "\n";
+                    $css = file_get_contents($minprep->fileroot . $url);
+                    if($minprep->filecomment === true) fwrite($cssout, "\n/* **** {$url} **** */\n");
+                    else fwrite($cssout, "\n");
+                    fwrite($cssout, $css);
+                    fwrite($cssout, "\n");
+                    if($minprep->mkbash === true) {
+                        fwrite($bashout, "rm -f {$minprep->fileroot}{$url}\n");
+                    }
                 }
             }
         }
@@ -87,15 +100,28 @@ while(!feof($htmlin)) {
                (strpos($hline, 'site.js') === false) && 
                (strpos($hline, 'jquery') === false) && 
                (strpos($hline, '//') === false)) {
-                $url = substr($hline, $src + 5);
-                $url = substr($url, 0, strpos($url, '"'));
-                echo 'JS found - ' . $url . "\n";
-                $js = file_get_contents($minprep->fileroot . $url);
-                if($minprep->filecomment === true) fwrite($jsout, "\n/* **** {$url} **** */\n");
-                else fwrite($jsout, "\n");
-                fwrite($jsout, $js);
-                if($minprep->mkbash === true) {
-                    fwrite($bashout, "rm -f {$minprep->fileroot}{$url}\n");
+                $exclude = false;
+                if(count($minprep->jsexclude) > 0) {
+                    for($ix = 0;$ix < count($minprep->jsexclude);$ix++) {
+                        if(strpos($hline, $minprep->jsexclude[$ix]) !== false) {
+                            $exclude = true;
+                            echo "\nJS exluded -  {$hline}\n";
+                            break;
+                        }
+                    }
+                }
+                if($exclude === false) {
+                    $url = substr($hline, $src + 5);
+                    $url = substr($url, 0, strpos($url, '"'));
+                    echo 'JS found - ' . $url . "\n";
+                    $js = file_get_contents($minprep->fileroot . $url);
+                    if($minprep->filecomment === true) fwrite($jsout, "\n/* **** {$url} **** */\n");
+                    else fwrite($jsout, "\n");
+                    fwrite($jsout, $js);
+                    fwrite($jsout, "\n");
+                    if($minprep->mkbash === true) {
+                        fwrite($bashout, "rm -f {$minprep->fileroot}{$url}\n");
+                    }
                 }
             }
         }
