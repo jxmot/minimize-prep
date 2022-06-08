@@ -1,6 +1,8 @@
 {
     "input":"example.html",
     "fileroot":"./public_html/",
+    "cssexclude": ["cssexcl"],
+    "jsexclude": ["jsexcl"],
     "cssout": "./site.css",
     "jsout": "./site.js",
     "filecomment": true,
