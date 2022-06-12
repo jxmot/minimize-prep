@@ -10,6 +10,7 @@ The result are two files that are ready for *minimization*. However, minimizatio
 
 * `minprep.json` - script configuration
 * `minprep.php` - opens the specified (*in minprep.json*) HTML file, reads it and looks for `<link>` and `<script>` tags. When found the path and file name are extracted and those files will be opened and concatenated in the specified CSS and JS files.
+* `minimize-prep.php` - Contains the functions used by `minprep.php`.
 * `public_html/*` - this folder contains files for use in the example
 
 ## Set Up
@@ -58,10 +59,10 @@ Now open `minprep.json`:
     "fileroot":"./public_html/",
     "cssexclude": ["cssexcl"],
     "jsexclude": ["jsexcl"],
-    "cssout": "./site.css",
-    "jsout": "./site.js",
-    "filecomment": true,
-    "mkbash": true
+    "cssout": "site.css",
+    "jsout": "site.js",
+    "mkremove": true,
+    "rmvscript": "rmvresources.sh"
 }
 ```
 
@@ -71,8 +72,7 @@ The remaining settings are:
 
 * `"cssexclude": ["cssexcl"]` and `"jsexclude": ["jsexcl"]` - Each is an array of strings where each is compared against the current resource found in `./public_html/example.html`. If there is a *partial* match then that resource will be excluded from the `./site.css` or `./site.js` files.
 * `"cssout": "./site.css"` and `"jsout": "./site.js"` - The path + file names of the resulting output files. 
-* `"filecomment": true` - For convenience, when `true` a commented line with the current resource file name will precede its contents. 
-* `"mkbash": true` - When `true` a file named `./rmvresources.sh` will be created. It will contain Linux `rm` commands for each of the resource files found.
+* `"mkremove": true` - When `true` a file named in `"rmvscript"` will be created. It will contain Linux `rm` commands for each of the resource files found.
 
 # Run
 
@@ -120,7 +120,7 @@ The current configuration will cause 3 files to be created:
 * `site.css` and `site.js`
 * `rmvresources.sh` - An optional bash script file that will contain Linux `rm` commands to delete the CSS and JSS *source* files that were used to create `site.css` and `site.js`. **USE THIS SCRIPT WITH CAUTION!!!**
 
-To disable the creation of `rmvresources.sh` edit `minprep.json` and change `"mkbash"` to `false`.
+To disable the creation of `rmvresources.sh` edit `minprep.json` and change `"mkremove"` to `false`.
 
 # Important Things to Note
 
@@ -138,7 +138,7 @@ This will **not** work:
 -->
 ```
 
-All `<link>` and `<script>` tags need to be contained on a single line, for example this will not work:
+All `<link>` and `<script>` tags need to be contained on a single line, for example this will **not** work:
 
 ```
 <script
@@ -148,7 +148,7 @@ src="path/to/some.js"
 
 The paths in the `<link>` and `<script>` can be *relative* or *absolute*. The script will create a path using `"fileroot"`in the `minprep.json` file.
 
-Each time you run `minprep.php` it will **overwrite** the `site.css` and `site.js` files. And if `"mkbash"` is `true` in `minprep.json` then a *bash script* named `rmvresources.sh` will be created. Its purpose is to make removing the original CSS and JS easier. Although removing them is not required, it is your descision for your project.
+Each time you run `minprep.php` it will **overwrite** the `site.css` and `site.js` files. And if `"mkremove"` is `true` in `minprep.json` then a *bash script* named in `"rmvscript"`  will be created. Its purpose is to make removing the original CSS and JS easier. Although removing them is not required, it is your descision for your project.
 
 ---
 <img src="http://webexperiment.info/extcounter/mdcount.php?id=minimize-prep">
