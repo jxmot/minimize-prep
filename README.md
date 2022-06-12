@@ -1,6 +1,6 @@
 # minimize-prep
 
-This repository contains a PHP script that reads a file where HTML tags (`<script>` and `<link>`) are used for including CSS and Javascript files in a web page. As each CSS or JavaScript file tag is found the file contents are read and then appended to an appropriate output file (CSS or JS).
+This repository contains a PHP script that reads a file where HTML tags (`<script>` and `<link>`) are used for including CSS and Javascript files in a web page. As each CSS or JavaScript file tag is found the file contents are read and then appended to an appropriate output file (CSS or JS). 
 
 In any `<script>` and `<link>` tags where the resource is not local those will be skipped and their contents will not be appended to output files (CSS or JS). 
 
@@ -86,29 +86,23 @@ The script will create output similar to this:
 Starting preparation...
 Input: ./public_html/example.html
 Files Root Path: ./public_html/
-./site.css and ./site.js will be overwritten.
+./public_html/assets/css/site.css and ./public_html/assets/js/site.js will be overwritten.
 
-Creating ./rmvresources.sh file
+Creating rmvresources.sh file
 
-CSS found - ./assets/css/example_1.css
-CSS found - ./assets/css/example_2.css
-CSS found - assets/css/example_3.css
-
-CSS exluded -      <link rel="stylesheet" href="./assets/css/cssexclude_1.css" type="text/css" />
-
-
-CSS exluded -      <link rel="stylesheet" href="./assets/cssexcl/exclude_1.css" type="text/css" />
-
-JS found - /assets/js/example_1.js
-JS found - ./assets/js/example_2.js
-JS found - ./assets/js/example_3.js
-JS found - ./assets/js/example_4.js
-
-JS exluded -      <script src="/assets/js/jsexclude_1.js" type="text/javascript"></script>
-
-
-JS exluded -      <script src="/assets/jsexcl/exclude_1.js" type="text/javascript"></script>
-
+Excluded - <link rel="stylesheet" href="https://unpkg.com/reset-css@5.0.1/reset.css" />
+Found - ./assets/css/example_1.css
+Found - ./assets/css/example_2.css
+Found - assets/css/example_3.css
+Excluded - <link rel="stylesheet" href="./assets/css/cssexclude_1.css" type="text/css" />
+Excluded - <link rel="stylesheet" href="./assets/cssexcl/exclude_1.css" type="text/css" />
+Excluded - <script src="//code.jquery.com/jquery-3.6.0.min.js" type="text/javascript"></script>
+Found - /assets/js/example_1.js
+Found - ./assets/js/example_2.js
+Found - ./assets/js/example_3.js
+Found - ./assets/js/example_4.js
+Excluded - <script src="/assets/js/jsexclude_1.js" type="text/javascript"></script>
+Excluded - <script src="/assets/jsexcl/exclude_1.js" type="text/javascript"></script>
 
 Preparation Complete.
 ```
