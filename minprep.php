@@ -65,16 +65,16 @@ while(!feof($htmlin)) {
     // link?
     if(($r = isLink($hline)) > 0) {
         // it's a link...
-        $href = $r;
+        $offset = $r + 6;
     
         if(isExcluded($hline, $minprep->cssexclude)) {
             if($_dbgmp) echo 'Excluded - ' . ltrim($hline);
             continue;
         }
     
-        $fpath = getFilePath(getURL($hline, $href + 6), $minprep->fileroot);
+        $fpath = getFilePath(getURL($hline, $offset), $minprep->fileroot);
         if(putContents($fpath, $cssout)) {
-            if($_dbgmp) echo "Found - " . getURL($hline, $href + 6) . "\n";
+            if($_dbgmp) echo "Found - " . getURL($hline, $offset) . "\n";
             if($minprep->mkremove === true) {
                 fwrite($bashout, "rm -f {$fpath}\n");
             }
@@ -86,16 +86,16 @@ while(!feof($htmlin)) {
         else {
             if(($r = isScript($hline)) > 0) {
                 // it's a script
-                $src = $r;
+                $offset = $r + 5;
     
                 if(isExcluded($hline, $minprep->jsexclude)) {
                     if($_dbgmp) echo 'Excluded - ' . ltrim($hline);
                     continue;
                 }
     
-                $fpath = getFilePath(getURL($hline, $src + 5), $minprep->fileroot);
+                $fpath = getFilePath(getURL($hline, $offset), $minprep->fileroot);
                 if(putContents($fpath, $jsout)) {
-                    if($_dbgmp) echo "Found - " . getURL($hline, $src + 5) . "\n";
+                    if($_dbgmp) echo "Found - " . getURL($hline, $offset) . "\n";
                     if($minprep->mkremove === true) {
                         fwrite($bashout, "rm -f {$fpath}\n");
                     }
