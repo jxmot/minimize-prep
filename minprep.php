@@ -36,7 +36,7 @@ if(file_exists($minprep->fileroot.$minprep->input) === false) {
     die();
 }
 
-require_once('minimize-prep.php');
+require_once 'minimize-prep.php';
 
 if($_dbgmp) {
     echo "Input: {$minprep->fileroot}{$minprep->input}\n";
