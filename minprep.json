@@ -1,4 +1,5 @@
 {
+    "verbose": true,
     "input":"example.html",
     "fileroot":"./public_html/",
     "cssexclude": ["cssexcl"],
