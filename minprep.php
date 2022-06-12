@@ -23,7 +23,10 @@
         Be sure to verify that the files found match what 
         is expected. Just in case something was not commented 
         correctly.
+
+        For additional details: https://github.com/jxmot/minimize-prep/#readme
 */
+// for silent running set to false
 $_dbgmp = true;
 
 if($_dbgmp) echo "Starting preparation...\n";
@@ -41,18 +44,19 @@ if($_dbgmp) {
     echo "{$minprep->fileroot}{$minprep->cssout} and {$minprep->fileroot}{$minprep->jsout} will be overwritten.\n\n";
 }
 
+// open output files and input file...
 $cssout = @fopen($minprep->fileroot . $minprep->cssout, 'w');
 $jsout  = @fopen($minprep->fileroot . $minprep->jsout, 'w');
 $htmlin = @fopen($minprep->fileroot . $minprep->input, 'r');
-$hline  = '';
 
-//$bashout = null;
+// Create the script to remove resources?
 if($minprep->mkremove === true) {
     if($_dbgmp) echo "Creating {$minprep->rmvscript} file\n\n";
     $bashout = @fopen($minprep->rmvscript, 'w');
     fwrite($bashout, "#!/bin/bash\n");
 } else if($_dbgmp) echo "\n";
 
+// read lines until the end...
 while(!feof($htmlin)) {
     $hline = fgets($htmlin);
     $fpath = '';
