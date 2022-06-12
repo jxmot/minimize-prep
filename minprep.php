@@ -66,13 +66,14 @@ while(!feof($htmlin)) {
     if(($r = isLink($hline)) > 0) {
         // it's a link...
         $offset = $r + 6;
-    
+        // is it excluded?
         if(isExcluded($hline, $minprep->cssexclude)) {
             if($_dbgmp) echo 'Excluded - ' . ltrim($hline);
             continue;
         }
-    
+        // get the full path
         $fpath = getFilePath(getURL($hline, $offset), $minprep->fileroot);
+        // transfer the contents...
         if(putContents($fpath, $cssout)) {
             if($_dbgmp) echo "Found - " . getURL($hline, $offset) . "\n";
             if($minprep->mkremove === true) {
