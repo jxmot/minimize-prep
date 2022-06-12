@@ -3,8 +3,8 @@
     "fileroot":"./public_html/",
     "cssexclude": ["cssexcl"],
     "jsexclude": ["jsexcl"],
-    "cssout": "site.css",
-    "jsout": "site.js",
+    "cssout": "assets/css/site.css",
+    "jsout": "assets/js/site.js",
     "filecomment": true,
     "mkbash": true
 }
