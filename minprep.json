@@ -5,6 +5,6 @@
     "jsexclude": ["jsexcl"],
     "cssout": "assets/css/site.css",
     "jsout": "assets/js/site.js",
-    "filecomment": true,
-    "mkbash": true
+    "mkremove": true,
+    "rmvscript": "rmvresources.sh"
 }
