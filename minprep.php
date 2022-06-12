@@ -26,19 +26,19 @@
 
         For additional details: https://github.com/jxmot/minimize-prep/#readme
 */
-// for silent running set to false
-$_dbgmp = true;
-
-if($_dbgmp) echo "Starting preparation...\n";
 $minprep = json_decode(file_get_contents('./minprep.json'));
 if(file_exists($minprep->fileroot.$minprep->input) === false) {
     echo 'ERROR ' . $minprep->fileroot.$minprep->input . ' does not exist!';
     die();
 }
 
+// for silent running set to false
+$_dbgmp = $minprep->verbose;
+
 require_once 'minimize-prep.php';
 
 if($_dbgmp) {
+    echo "Starting preparation...\n";
     echo "Input: {$minprep->fileroot}{$minprep->input}\n";
     echo "Files Root Path: {$minprep->fileroot}\n";
     echo "{$minprep->fileroot}{$minprep->cssout} and {$minprep->fileroot}{$minprep->jsout} will be overwritten.\n\n";
