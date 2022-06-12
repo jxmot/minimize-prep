@@ -71,10 +71,10 @@ function isScript($hline) {
 */
 function isExcluded($hline, $exclude) {
     $excl = false;
-    // <link> or <script> containin the following 
+    // <link> or <script> containing the following 
     // will be excluded
-    if((strpos($hline, 'http://') === false) && 
-       (strpos($hline, 'https://') === false) && 
+    if((strpos($hline, 'http:') === false) && 
+       (strpos($hline, 'https:') === false) && 
        (strpos($hline, 'site.css') === false) && 
        (strpos($hline, 'site.js') === false) && 
        (strpos($hline, 'site.min.css') === false) && 
