@@ -24,7 +24,6 @@ function isLink($hline) {
             // see if the "href=" is between comment markers
             if($href === false || ($href > $cbeg) && ($href < $cend)) $ret = false;
             else $ret = $href; // return position, > 0
-            }
         }
     }
     return $ret;
