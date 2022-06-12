@@ -23,105 +23,85 @@
         Be sure to verify that the files found match what 
         is expected. Just in case something was not commented 
         correctly.
+
+        For additional details: https://github.com/jxmot/minimize-prep/#readme
 */
-echo "Starting preparation...\n";
+// for silent running set to false
+$_dbgmp = true;
+
+if($_dbgmp) echo "Starting preparation...\n";
 $minprep = json_decode(file_get_contents('./minprep.json'));
 if(file_exists($minprep->fileroot.$minprep->input) === false) {
-    echo $minprep->fileroot.$minprep->input . ' does not exist!';
+    echo 'ERROR ' . $minprep->fileroot.$minprep->input . ' does not exist!';
     die();
 }
-echo "Input: {$minprep->fileroot}{$minprep->input}\n";
-echo "Files Root Path: {$minprep->fileroot}\n";
-echo "{$minprep->cssout} and {$minprep->jsout} will be overwritten.\n\n";
 
-$cssout = @fopen($minprep->cssout, 'w');
-$jsout  = @fopen($minprep->jsout, 'w');
+require_once('minimize-prep.php');
+
+if($_dbgmp) {
+    echo "Input: {$minprep->fileroot}{$minprep->input}\n";
+    echo "Files Root Path: {$minprep->fileroot}\n";
+    echo "{$minprep->fileroot}{$minprep->cssout} and {$minprep->fileroot}{$minprep->jsout} will be overwritten.\n\n";
+}
+
+// open output files and input file...
+$cssout = @fopen($minprep->fileroot . $minprep->cssout, 'w');
+$jsout  = @fopen($minprep->fileroot . $minprep->jsout, 'w');
 $htmlin = @fopen($minprep->fileroot . $minprep->input, 'r');
-$hline  = '';
 
-$bashout = null;
-$bashfile = './rmvresources.sh';
-if($minprep->mkbash === true) {
-    echo "Creating {$bashfile} file\n\n";
-    $bashout = @fopen($bashfile, 'w');
+// Create the script to remove resources?
+if($minprep->mkremove === true) {
+    if($_dbgmp) echo "Creating {$minprep->rmvscript} file\n\n";
+    $bashout = @fopen($minprep->rmvscript, 'w');
     fwrite($bashout, "#!/bin/bash\n");
-} else echo "\n";
+} else if($_dbgmp) echo "\n";
 
+// read lines until the end...
 while(!feof($htmlin)) {
     $hline = fgets($htmlin);
-
-    $cbeg =  strpos($hline, '<!--');
-    $cend =  strpos($hline, '-->');
+    $fpath = '';
 
     // parse the line...
     // link?
-    if(strpos($hline, '<link') !== false) {
-        if(strpos($hline, 'rel="stylesheet"') !== false) {
-            // get the href
-            $href = strpos($hline, 'href=');
-            if($href === false || ($href > $cbeg) && ($href < $cend)) continue;
-            if((strpos($hline, 'http://') === false) && 
-               (strpos($hline, 'https://') === false) && 
-               (strpos($hline, 'site.css') === false) && 
-               (strpos($hline, '//') === false)) {
-                $exclude = false;
-                if(count($minprep->cssexclude) > 0) {
-                    for($ix = 0;$ix < count($minprep->cssexclude);$ix++) {
-                        if(strpos($hline, $minprep->cssexclude[$ix]) !== false) {
-                            $exclude = true;
-                            echo "\nCSS exluded -  {$hline}\n";
-                            break;
-                        }
-                    }
-                }
-                if($exclude === false) {
-                    $url = substr($hline, $href + 6);
-                    $url = substr($url, 0, strpos($url, '"'));
-                    echo 'CSS found - ' . $url . "\n";
-                    $css = file_get_contents($minprep->fileroot . $url);
-                    if($minprep->filecomment === true) fwrite($cssout, "\n/* **** {$url} **** */\n");
-                    else fwrite($cssout, "\n");
-                    fwrite($cssout, $css);
-                    fwrite($cssout, "\n");
-                    if($minprep->mkbash === true) {
-                        fwrite($bashout, "rm -f {$minprep->fileroot}{$url}\n");
-                    }
-                }
+    if(($r = isLink($hline)) > 0) {
+        // it's a link...
+        $offset = $r + 6;
+        // is it excluded?
+        if(isExcluded($hline, $minprep->cssexclude)) {
+            if($_dbgmp) echo 'Excluded - ' . ltrim($hline);
+            continue;
+        }
+        // get the full path
+        $fpath = getFilePath(getURL($hline, $offset), $minprep->fileroot);
+        // transfer the contents...
+        if(putContents($fpath, $cssout)) {
+            if($_dbgmp) echo "Found - " . getURL($hline, $offset) . "\n";
+            if($minprep->mkremove === true) {
+                fwrite($bashout, "rm -f {$fpath}\n");
             }
+        } else {
+            echo "ERROR File Not Found: {$fpath}\n";
         }
     } else {
-        // script?
-        if(strpos($hline, '<script') !== false) {
-            // get the src
-            $src = strpos($hline, 'src=');
-            if($src === false || ($src > $cbeg) && ($src < $cend)) continue;
-            if((strpos($hline, 'http://') === false) && 
-               (strpos($hline, 'https://') === false) && 
-               (strpos($hline, 'site.js') === false) && 
-               (strpos($hline, 'jquery') === false) && 
-               (strpos($hline, '//') === false)) {
-                $exclude = false;
-                if(count($minprep->jsexclude) > 0) {
-                    for($ix = 0;$ix < count($minprep->jsexclude);$ix++) {
-                        if(strpos($hline, $minprep->jsexclude[$ix]) !== false) {
-                            $exclude = true;
-                            echo "\nJS exluded -  {$hline}\n";
-                            break;
-                        }
-                    }
+        if($r === false) continue;
+        else {
+            if(($r = isScript($hline)) > 0) {
+                // it's a script
+                $offset = $r + 5;
+    
+                if(isExcluded($hline, $minprep->jsexclude)) {
+                    if($_dbgmp) echo 'Excluded - ' . ltrim($hline);
+                    continue;
                 }
-                if($exclude === false) {
-                    $url = substr($hline, $src + 5);
-                    $url = substr($url, 0, strpos($url, '"'));
-                    echo 'JS found - ' . $url . "\n";
-                    $js = file_get_contents($minprep->fileroot . $url);
-                    if($minprep->filecomment === true) fwrite($jsout, "\n/* **** {$url} **** */\n");
-                    else fwrite($jsout, "\n");
-                    fwrite($jsout, $js);
-                    fwrite($jsout, "\n");
-                    if($minprep->mkbash === true) {
-                        fwrite($bashout, "rm -f {$minprep->fileroot}{$url}\n");
+    
+                $fpath = getFilePath(getURL($hline, $offset), $minprep->fileroot);
+                if(putContents($fpath, $jsout)) {
+                    if($_dbgmp) echo "Found - " . getURL($hline, $offset) . "\n";
+                    if($minprep->mkremove === true) {
+                        fwrite($bashout, "rm -f {$fpath}\n");
                     }
+                } else {
+                    echo "ERROR File Not Found: {$fpath}\n";
                 }
             }
         }
@@ -136,10 +116,10 @@ fclose($jsout);
 
 fclose($htmlin);
 
-if($minprep->mkbash === true) {
+if($minprep->mkremove === true) {
     fflush($bashout);
     fclose($bashout);
 }
 
-echo "\nPreparation Complete.\n";
+if($_dbgmp) echo "\nPreparation Complete.\n";
 ?>
